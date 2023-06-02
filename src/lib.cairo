@@ -1,2 +1,2 @@
-mod ERC721Base;
-mod Diode;
+mod erc721Base;
+mod diode;
