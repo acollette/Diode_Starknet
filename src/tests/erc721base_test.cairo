@@ -13,7 +13,7 @@ use debug::PrintTrait;
 
 use diode_new::erc721Base::ERC721Base;
 
-fn setup() -> (ContractAddress) {
+fn setup() -> (ContractAddress,) {
     // Set up.
 
     // Deploy mock token.
@@ -35,5 +35,5 @@ fn setup() -> (ContractAddress) {
     //let token = IMockERC20Dispatcher { contract_address: token_address };
     //let vault = IERC4626Dispatcher { contract_address: vault_address };
 
-    (token_address)
+    (token_address,)
 }

@@ -15,4 +15,3 @@ casm = true
 name = "compiled"
 
 [scripts]
-test-cairo = "cairo-test --starknet"
