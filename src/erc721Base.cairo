@@ -1,4 +1,5 @@
 
+
 #[contract]
 mod ERC721Base {
     // same like msg.sender in Solidity, return type is ContractAddress
@@ -51,8 +52,7 @@ mod ERC721Base {
 
     #[constructor]
     fn constructor(_name: felt252 , _symbol: felt252) {
-        name::write(_name);
-        symbol::write(_symbol);
+        initializer(_name, _symbol);
     }
 
 
@@ -105,11 +105,12 @@ mod ERC721Base {
     ////////////////////////////////
 
     #[external]
-    fn mint() {
+    fn mint() -> u256 {
         let sender_address: ContractAddress = get_caller_address();
         let tokenId = totalSupply::read();
         _mint(sender_address, tokenId);
         totalSupply::write(tokenId + 1.into());
+        tokenId;
     }
 
     fn _mint(to: ContractAddress, token_id: u256) {
@@ -182,14 +183,24 @@ mod ERC721Base {
     ////////////////////////////////
     // Internal FUNCTIONS
     ////////////////////////////////
+
+    #[internal]
+    fn initializer(name_: felt252, symbol_: felt252) {
+        _name::write(name_);
+        _symbol::write(symbol_);
+    }
+
+    #[internal]
     fn _exists(token_id: u256) -> bool {
         !_owner_of(token_id).is_zero()
     }
 
+    #[internal]
     fn _owner_of(token_id: u256) -> ContractAddress {
         owners::read(token_id)
     }   
 
+    #[internal]
     fn _burn(token_id: u256) {
         let owner = owner_of(token_id);
         _beforeTokenTransfer(owner, contract_address_const::<0>(), token_id, 1.into());
@@ -203,11 +214,12 @@ mod ERC721Base {
         _afterTokenTransfer(owner, contract_address_const::<0>(), token_id, 1.into());
     }
 
+    #[internal]
     fn _require_minted(token_id: u256) {
         assert(_exists(token_id), 'ERC721: invalid token ID');
     }
 
-    
+    #[internal]
     fn _is_approved_or_owner(spender: ContractAddress, token_id: u256) -> bool {
         let owner = owners::read(token_id);
         // || is not supported currently so we use | here
@@ -216,6 +228,7 @@ mod ERC721Base {
             | get_approved(token_id) == spender
     }
 
+    #[internal]
     fn _beforeTokenTransfer(
         from: ContractAddress, 
         to: ContractAddress, 
@@ -223,6 +236,7 @@ mod ERC721Base {
         batch_size: u256
     ) {}
 
+    #[internal]
     fn _afterTokenTransfer(
         from: ContractAddress, 
         to: ContractAddress, 

@@ -16,8 +16,6 @@ use diode_new::erc721Base::ERC721Base;
 fn setup() -> (ContractAddress,) {
     // Set up.
 
-    // Deploy mock token.
-
     let alice = contract_address_const::<0x123456789>();
 
     let mut calldata = ArrayTrait::new();
@@ -27,13 +25,19 @@ fn setup() -> (ContractAddress,) {
     calldata.append(symbol);
 
     testing::set_contract_address(alice);
-    let (token_address, _) = deploy_syscall(
+
+    let (erc721_address, _) = deploy_syscall(
         ERC721Base::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
     )
         .unwrap();
 
-    //let token = IMockERC20Dispatcher { contract_address: token_address };
-    //let vault = IERC4626Dispatcher { contract_address: vault_address };
-
-    (token_address,)
+    (erc721_address,)
 }
+
+#[test]
+fn test_mint() {
+    let (underlying, , _) = setup();
+    let alice = contract_address_const::<0x123456789>();
+    testing::set_contract_address(alice);
+}
+
